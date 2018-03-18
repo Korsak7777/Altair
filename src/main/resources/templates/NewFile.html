@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<tbody>
+  <tr>
+    <td>1</td>
+    <td>
+      <select id="rows0.variety" name="rows[0].variety">
+        <option selected="selected" value="1">Thymus vulgaris</option>
+        <option value="2">Thymus x citriodorus</option>
+        <option value="3">Thymus herba-barona</option>
+        <option value="4">Thymus pseudolaginosus</option>
+        <option value="5">Thymus serpyllum</option>
+      </select>
+    </td>
+    <td>
+      <input id="rows0.seedsPerCell" name="rows[0].seedsPerCell" type="text" value="" />
+    </td>
+    <td>
+      <button name="removeRow" type="submit" value="0">Remove row</button>
+    </td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>
+      <select id="rows1.variety" name="rows[1].variety">
+        <option selected="selected" value="1">Thymus vulgaris</option>
+        <option value="2">Thymus x citriodorus</option>
+        <option value="3">Thymus herba-barona</option>
+        <option value="4">Thymus pseudolaginosus</option>
+        <option value="5">Thymus serpyllum</option>
+      </select>
+    </td>
+    <td>
+      <input id="rows1.seedsPerCell" name="rows[1].seedsPerCell" type="text" value="" />
+    </td>
+    <td>
+      <button name="removeRow" type="submit" value="1">Remove row</button>
+    </td>
+  </tr>
+</tbody>
+<ul>
+  <li>
+    <input id="features1" name="features" type="checkbox" value="SEEDSTARTER_SPECIFIC_SUBSTRATE" />
+    <input name="_features" type="hidden" value="on" />
+    <label for="features1">Seed starter-specific substrate</label>
+  </li>
+  <li>
+    <input id="features2" name="features" type="checkbox" value="FERTILIZER" />
+    <input name="_features" type="hidden" value="on" />
+    <label for="features2">Fertilizer used</label>
+  </li>
+  <li>
+    <input id="features3" name="features" type="checkbox" value="PH_CORRECTOR" />
+
+    <label for="features3">PH Corrector used</label>
+  </li>
+</ul>
+</body>
+</html>
