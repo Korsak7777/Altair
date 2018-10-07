@@ -18,7 +18,6 @@ public class AccountDAO {
 	
 	public Account findAccount(String userName) {
 		Session session = this.sessionFactory.getCurrentSession();	
-		//cfhdfh
 		return session.find(Account.class, userName);
 	}
 	
