@@ -1,0 +1,113 @@
+﻿<xs:schema 
+	xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" 
+	xmlns:tns="http://v8.1c.ru/8.1/data/enterprise/current-config" 
+	xmlns:v8="http://v8.1c.ru/8.1/data/core" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://v8.1c.ru/8.1/data/enterprise/current-config" 
+		attributeFormDefault="unqualified" 
+		elementFormDefault="qualified">
+	<xs:import namespace="http://v8.1c.ru/8.1/data/enterprise"/>
+	<xs:import namespace="http://v8.1c.ru/8.1/data/core"/>
+
+	<xs:complexType name="DocumentObject.ЗаявкиКлиентов">
+		<xs:sequence>
+			<xs:element name="Ref" type="tns:DocumentRef.ЗаявкиКлиентов"/>
+			<xs:element name="DeletionMark" type="xs:boolean"/>
+			<xs:element name="Date" type="xs:dateTime"/>
+			<xs:element name="Number" type="xs:string"/>
+			<xs:element name="Posted" type="xs:boolean"/>
+			<xs:element name="ВходящийНомер" type="xs:string"/>
+			<xs:element name="ВходящаяДата" type="xs:dateTime"/>
+			<xs:element name="Договор" type="tns:CatalogRef.ДоговорыСКонтрагентами"/>
+			<xs:element name="Организация" type="tns:CatalogRef.Организации"/>
+			<xs:element name="Контрагент" type="tns:CatalogRef.Контрагенты"/>
+			<xs:element name="КонтактноеЛицоОрганизации" type="tns:CatalogRef.ФизическиеЛица"/>
+			<xs:element name="КонтактноеЛицоКонтрагента" type="tns:CatalogRef.ФизическиеЛица"/>
+			<xs:element name="Маршрут" type="xs:string"/>
+			<xs:element name="СтоимостьПеревозки" type="xs:decimal"/>
+			<xs:element name="ТемпературныйРежим" type="tns:CatalogRef.ТемпературныеРежимы"/>
+			<xs:element name="КоличествоГруза" type="xs:decimal"/>
+			<xs:element name="ОбъёмГруза" type="xs:decimal"/>
+			<xs:element name="СтоимостьГруза" type="xs:decimal"/>
+			<xs:element name="МассаГруза" type="xs:decimal"/>
+			<xs:element name="АвтоматическиРассчитыватьМассу" type="xs:boolean"/>
+			<xs:element name="АвтоматическиРассчитыватьКоличество" type="xs:boolean"/>
+			<xs:element name="АвтоматическиРассчитыватьОбъём" type="xs:boolean"/>
+			<xs:element name="АвтоматическиРассчитыватьСтоимостьГруза" type="xs:boolean"/>
+			<xs:element name="АвтоматическиРассчитыватьСтоимостьПеревозки" type="xs:boolean"/>
+			<xs:element name="Автор" type="tns:CatalogRef.ФизическиеЛица"/>
+			<xs:element name="ФормаОплаты" type="tns:EnumRef.ФормыОплаты"/>
+			<xs:element name="УсловияОплаты" type="tns:CatalogRef.УсловияОплаты"/>
+			<xs:element name="Предоплата" type="xs:boolean"/>
+			<xs:element name="УсловияПредоплаты" type="tns:CatalogRef.УсловияПредоплаты"/>
+			<xs:element name="ПроцентПредоплаты" type="xs:decimal"/>
+			<xs:element name="СрокОплаты" type="xs:decimal"/>
+			<xs:element name="ТипУслуги" type="tns:CatalogRef.Номенклатура"/>
+			<xs:element name="Менеджер" type="tns:CatalogRef.ФизическиеЛица"/>
+			<xs:element name="Подписано" type="xs:boolean"/>
+			<xs:element name="УсловияВыполнены" type="xs:dateTime"/>
+			<xs:element name="Тариф" type="tns:EnumRef.Тарифы"/>
+			<xs:element name="Количество" type="xs:decimal"/>
+			<xs:element name="Цена" type="xs:decimal"/>
+			<xs:element name="ТипПредоплаты" type="xs:boolean"/>
+			<xs:element name="КрайнийСрокОплаты" type="xs:dateTime"/>
+			<xs:element name="ВычислятьКрайнийСрокОплаты" type="xs:boolean"/>
+			<xs:element name="ПодписаноКлиентом" type="xs:boolean"/>
+			<xs:element name="ЭтоДоставка" type="xs:boolean"/>
+			<xs:element name="ДоставкаЗаСчётКлиента" type="xs:boolean"/>
+			<xs:element name="Направление" type="tns:CatalogRef.Направления"/>
+			<xs:element name="МестаПогрузки" type="tns:DocumentTabularSectionRow.ЗаявкиКлиентов.МестаПогрузки" minOccurs="0" maxOccurs="99999"/>
+			<xs:element name="МестаВыгрузки" type="tns:DocumentTabularSectionRow.ЗаявкиКлиентов.МестаВыгрузки" minOccurs="0" maxOccurs="99999"/>
+			<xs:element name="УсловияЗаявки" type="tns:DocumentTabularSectionRow.ЗаявкиКлиентов.УсловияЗаявки" minOccurs="0" maxOccurs="99999"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="DocumentTabularSectionRow.ЗаявкиКлиентов.МестаВыгрузки">
+		<xs:sequence>
+			<xs:element name="ДатаИВремяПодачиАвтоКонец" type="xs:dateTime"/>
+			<xs:element name="ДатаИВремяПодачиАвтоНачало" type="xs:dateTime"/>
+			<xs:element name="Адрес" type="tns:CatalogRef.МестаВыгрузки"/>
+			<xs:element name="КонтактноеЛицо" type="xs:string"/>
+			<xs:element name="КатегорияТовара" type="tns:CatalogRef.КатегорииТоваров"/>
+			<xs:element name="Масса" type="xs:decimal"/>
+			<xs:element name="Объём" type="xs:decimal"/>
+			<xs:element name="Количество" type="xs:decimal"/>
+			<xs:element name="Дополнительно" type="xs:string"/>
+			<xs:element name="УникальныйИдентификатор" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DocumentTabularSectionRow.ЗаявкиКлиентов.МестаПогрузки">
+		<xs:sequence>
+			<xs:element name="ДатаИВремяПодачиАвтоНачало" type="xs:dateTime"/>
+			<xs:element name="ДатаИВремяПодачиАвтоКонец" type="xs:dateTime"/>
+			<xs:element name="Адрес" type="tns:CatalogRef.МестаПогрузки"/>
+			<xs:element name="КонтактноеЛицо" type="xs:string"/>
+			<xs:element name="КатегорияТовара" type="tns:CatalogRef.КатегорииТоваров"/>
+			<xs:element name="Масса" type="xs:decimal"/>
+			<xs:element name="Объём" type="xs:decimal"/>
+			<xs:element name="Количество" type="xs:decimal"/>
+			<xs:element name="ЕдиницаКоличества" type="tns:CatalogRef.КоличествоГруза"/>
+			<xs:element name="Автомобиль" type="xs:string"/>
+			<xs:element name="Водитель" type="tns:CatalogRef.ФизическиеЛица"/>
+			<xs:element name="СтоимостьГруза" type="xs:decimal"/>
+			<xs:element name="Дополнительно" type="xs:string"/>
+			<xs:element name="СтоимостьПеревозки" type="xs:decimal"/>
+			<xs:element name="ТемпературныйРежим" type="tns:CatalogRef.ТемпературныеРежимы"/>
+			<xs:element name="Погружено" type="xs:boolean"/>
+			<xs:element name="Этап" type="tns:CatalogRef.ЭтапыИсполненияЗаявокГрузоотправителей"/>
+			<xs:element name="ТребуемыеДокументы" type="xs:string"/>
+			<xs:element name="ГрузГотов" type="xs:boolean"/>
+			<xs:element name="Доверенность" type="tns:DocumentRef.Доверенность"/>
+			<xs:element name="ЗаявкаПеревозчику" type="tns:DocumentRef.ЗаявкиПеревозчикам"/>
+			<xs:element name="УникальныйИдентификатор" type="xs:string"/>
+			<xs:element name="Грузополучатель" type="tns:CatalogRef.Контрагенты"/>
+			<xs:element name="НаименованиеГруза" type="tns:CatalogRef.Номенклатура"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DocumentTabularSectionRow.ЗаявкиКлиентов.УсловияЗаявки">
+		<xs:sequence>
+			<xs:element name="Условие" type="xs:string"/>
+			<xs:element name="Жирным" type="xs:boolean"/>
+			<xs:element name="Курсив" type="xs:boolean"/>
+			<xs:element name="Подчеркнуть" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>

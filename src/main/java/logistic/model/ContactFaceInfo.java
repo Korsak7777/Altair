@@ -3,6 +3,10 @@ package logistic.model;
 import java.util.List;
 
 
+/**
+ * @author korsak7777
+ * Содержит информацию о контактном лице: имя контакта
+ */
 public class ContactFaceInfo {
 
 	private String contactName;

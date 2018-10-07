@@ -1,9 +1,11 @@
 package logistic.dao;
 
+import java.util.ListIterator;
 import java.util.UUID;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.threeten.bp.LocalDateTime;
 
 import logistic.entity.Account;
 import logistic.entity.ContactFace;
@@ -38,7 +41,18 @@ public class RequestDAO {
 	@Autowired
 	private PlaceLoadUnloadDAO placeLoadUnloadDAO;
 	
-	public Request findRequest(int requestNum) {
+	private int getMaxRequestNum() {
+		String sql = "Select max(r.requestNum) from " + Request.class.getName() + " r ";
+		Session session = this.sessionFactory.getCurrentSession();
+		Query<Integer> query = session.createQuery(sql, Integer.class);
+		Integer value = (Integer) query.getSingleResult();
+		if (value == null) {
+			return 0;
+		}
+		return value;
+	}
+	
+	private Request findRequest(int requestNum) {
 		
 		try {
 			String sql = "Select e from " + Request.class.getName() + 
@@ -60,7 +74,7 @@ public class RequestDAO {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public void saveRequestDetails(RequestDetailsForm requestDetailsForm) {
+	private void saveRequestDetails(RequestDetailsForm requestDetailsForm, int requestNum) {
 		System.out.println("DAO saveRequestDetails");
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -80,7 +94,7 @@ public class RequestDAO {
 		requestDetails.setPalletQuantity(requestDetailsForm.getPalletQuantity());
 		requestDetails.setLoadingUnloading(requestDetailsForm.isLoadingUnloading());
 		
-		requestDetails.setRequest(this.findRequest(1));
+		requestDetails.setRequest(this.findRequest(requestNum));
 		
 		session.persist(requestDetails);
 		session.flush();		
@@ -88,8 +102,38 @@ public class RequestDAO {
 
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public void saveRequest(RequestList requestList) {
-		// TODO Auto-generated method stub
+		System.out.println("DAO saveRequest");
+
+		Session session = this.sessionFactory.getCurrentSession();
 		
+		Request request = new Request();
+		
+		int amount = 0;
+		int requestNum = getMaxRequestNum() + 1;
+		LocalDateTime creationDate = LocalDateTime.now();
+		
+		request.setRequestId(UUID.randomUUID().toString());
+		request.setUserName(accountDAO.findUserAccount());
+		request.setRequestNum(requestNum);
+		request.setCreationDate(creationDate.toString());
+	
+		ListIterator<RequestDetailsForm> requestListIter = requestList.getList().listIterator();
+		while (requestListIter.hasNext()) {
+			amount += requestListIter.next().getPalletQuantity();
+			System.out.println("amount: "+ amount);
+		}
+		
+		request.setAmount(amount);
+		
+		session.persist(request);
+		
+		while (requestListIter.hasPrevious()) {
+			RequestDetailsForm R = requestListIter.previous();
+			this.saveRequestDetails(R, requestNum);
+		}
+		session.flush();
+
 	}
 }

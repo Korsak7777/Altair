@@ -22,7 +22,7 @@ public class Utils {
 		request.getSession().removeAttribute("requestList");
 	}
 
-	public static void storeLastOrderedCartInSession(HttpServletRequest request, RequestList requestList) {
+	public static void storeLastRequestInSession(HttpServletRequest request, RequestList requestList) {
 		request.getSession().setAttribute("lastRequestList", requestList);		
 	}
 }

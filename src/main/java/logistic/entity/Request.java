@@ -1,7 +1,6 @@
 package logistic.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +27,7 @@ public class Request implements Serializable {
 	private Account userName;
 	
 	@Column(name = "CREATION_DATE", nullable = false)
-	private Date creationDate;
+	private String creationDate;
 	
 	@Column(name = "AMOUNT", nullable = true)
 	private int amount;
@@ -48,10 +47,10 @@ public class Request implements Serializable {
 	public void setUserName(Account userName) {
 		this.userName = userName;
 	}
-	public Date getCreationDate() {
+	public String getCreationDate() {
 		return creationDate;
 	}
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
 	}
 	public int getAmount() {

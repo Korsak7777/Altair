@@ -85,35 +85,37 @@
 				</tr>				
 			</table>
 		</form>
+		
+     		<h2>Допили валидатор</h2>
 		   	
-<!--       	<form method="POST" th:object="${requestList}" th:action="@{/requestConfirmation}"> -->
-<!--             <th:block th:if="${requestList == null || requestList.list == null || requestList.list.empty}"> -->
-<!--          		<h2>Еще не сделаны подзаказы</h2> -->
-<!--      		</th:block> -->
-     	
-<!--      		<th:block th:if="${requestList != null && requestList.list != null && requestList.list.empty}"> -->
-<!--      			<table border="1" style="width:100%"> -->
-<!--          			<tr> -->
-<!--          	   			<th>Место</th> -->
-<!--           	   			<th>Контакт</th> -->
-<!--            				<th>Дата</th> -->
-<!--             			<th>Масса</th> -->
-<!--             			<th>Количество паллет</th> -->
-<!--             			<th>Погрузка/разгрузка</th> -->
-<!--          			</tr> -->
-<!--          			<tr th:each="requestDetails : ${requestList.list}"> -->
-<!--             			<td th:utext="${requestDetails.placeLoadUnload}"></td> -->
-<!--             			<td th:utext="${requestDetails.contactFace}"></td> -->
-<!--             			<td th:utext="${requestDetails.dateOfEvent}"></td> -->
-<!--             			<td th:utext="${requestDetails.mass}"></td> -->
-<!--             			<td th:utext="${requestDetails.palletQuantity}"></td> -->
-<!--             			<td th:utext="${requestDetails.loadingUnloading}"></td> -->
-<!--          			</tr> -->
-<!--       			</table> -->
-<!--       		</th:block> -->
-<!--          	Send/Save -->
-<!--          	<input type="submit" value="Send" class="button-send-sc" /> -->
-<!--       	</form>      				 -->
+      	<form method="POST" th:object="${requestList}" th:action="@{/requestConfirmation}">
+            <th:block th:if="${requestList == null || requestList.list == null || requestList.list.empty}">
+         		<h2>Еще не сделаны подзаказы</h2>
+     		</th:block>
+     		<h2>Допили валидатор</h2>
+     		<th:block th:if="${requestList != null && requestList.list != null && !requestList.list.empty}">
+     			<table border="1" style="width:100%">
+         			<tr>
+         	   			<th>Место</th>
+          	   			<th>Контакт</th>
+           				<th>Дата</th>
+            			<th>Масса</th>
+            			<th>Количество паллет</th>
+            			<th>Погрузка?</th>
+         			</tr>
+         			<tr th:each="requestDetailsForm : ${requestList.list}">
+            			<td th:utext="${requestDetailsForm.placeLoadUnload}"></td>
+            			<td th:utext="${requestDetailsForm.contactFace}"></td>
+            			<td th:utext="${requestDetailsForm.dateOfEvent}"></td>
+            			<td th:utext="${#numbers.formatDecimal(requestDetailsForm.mass,3,0,'COMMA')}"></td>
+            			<td th:utext="${#numbers.formatDecimal(requestDetailsForm.palletQuantity,1,0,'COMMA')}"></td>
+            			<td th:utext="${requestDetailsForm.loadingUnloading}"></td>
+         			</tr>
+      			</table>
+      		</th:block>
+         	Send/Save
+         	<input type="submit" value="Send" class="button-send-sc" />
+      	</form>      				
 		
 		<th:block th:include="/_footer"></th:block>					
 	</body>

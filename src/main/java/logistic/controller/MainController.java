@@ -155,7 +155,7 @@ public class MainController {
 	@RequestMapping(value = {"/addPlaceLoadUnload"}, method = RequestMethod.GET)
 	public String placeLoadUnload(Model model, @RequestParam(value = "adressName", 
 			defaultValue = "") String adressName) {
-		System.out.println("controller Place Load Unload GET");
+//		System.out.println("controller Place Load Unload GET");
 		PlaceLoadUnloadForm placeLoadUnloadForm = null;
 		
 		if (adressName != null && adressName.length()>0) {
@@ -183,15 +183,14 @@ public class MainController {
 	public String placeLoadUnloadSave(Model model, @ModelAttribute("placeLoadUnloadForm") 
 			@Validated PlaceLoadUnloadForm placeLoadUnloadForm, BindingResult result,
 			final RedirectAttributes redirectAttributes) {
-		System.out.println("controller Place Load Unload POST");
+//		System.out.println("controller Place Load Unload POST");
+		
+		ContactFaceInfo contactInfo = new ContactFaceInfo();
+		contactInfo.setList(contactFaceDAO.queryListContactFace());
+		model.addAttribute("contactList", contactInfo);
 		
 		if (result.hasErrors()) {
 	        System.out.println("save hasErrors: " + result.getAllErrors().toString() );
-
-	        ContactFaceInfo contactInfo = new ContactFaceInfo();
-			contactInfo.setList(contactFaceDAO.queryListContactFace());
-			model.addAttribute("contactList", contactInfo);
-
 			return "addPlaceLoadUnload";
 		}
 		try {
@@ -199,12 +198,7 @@ public class MainController {
 	        System.out.println("save" );
 
 		} catch (Exception e) {
-			
-			ContactFaceInfo contactInfo = new ContactFaceInfo();
-			contactInfo.setList(contactFaceDAO.queryListContactFace());
-			model.addAttribute("contactList", contactInfo);
-			
-	        Throwable rootCause = ExceptionUtils.getRootCause(e);
+			Throwable rootCause = ExceptionUtils.getRootCause(e);
 	        String message = rootCause.getMessage();
 	        System.out.println("\nException e: " + message);
 	        model.addAttribute("errorMessage", message);
@@ -214,13 +208,55 @@ public class MainController {
 		return "redirect:/";
 	}
 	
+	//
+	/**
+	 * извлекает даные с сервера
+	 * @param request
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = {"/addRequest"}, method = RequestMethod.GET)
 	public String addRequestGet(HttpServletRequest request, Model model) {
 		System.out.println("addRequestGet");
 		
+		//создание и добавление атрибута requestDetailsForm
 		RequestDetailsForm requestDetailsForm = new RequestDetailsForm();
 		model.addAttribute("requestDetailsForm", requestDetailsForm);
 
+		//добавление списка контактов в выпадающее окно
+		ContactFaceInfo contactInfo = new ContactFaceInfo();
+		contactInfo.setList(contactFaceDAO.queryListContactFace());
+		model.addAttribute("contactList", contactInfo);
+
+		//добавление мест погрузок в выпадающее окно
+		PlaceLoadUnloadInfo placeLoadUnloadInfo = new PlaceLoadUnloadInfo();
+		placeLoadUnloadInfo.setList(placeLoadUnloadDAO.queryListPlaceLoadUnload());
+		model.addAttribute("placeLoadUnloadList", placeLoadUnloadInfo);
+		
+		//добавление списка подзаказов, при его существовании
+		RequestList requestList = Utils.getRequestListInSession(request);
+		model.addAttribute("requestList", requestList);
+		
+		System.out.println("\n" + "add Request Get " + requestList.getList().toString() + "\n");
+		
+		return "request";
+	}
+	
+	/**
+	 * 
+	 * Отправляет данные на сервер
+	 * @param request
+	 * @param model
+	 * @param requestDetailsForm
+	 * @param result
+	 * @return
+	 */
+	@RequestMapping(value = {"/addRequest"}, method = RequestMethod.POST)
+	public String addRequestPost(HttpServletRequest request, Model model,
+			@ModelAttribute("requestDetailsForm") @Validated RequestDetailsForm requestDetailsForm,
+			BindingResult result) {
+		
+		//добавление списка контактов в выпадающее окно
 		ContactFaceInfo contactInfo = new ContactFaceInfo();
 		contactInfo.setList(contactFaceDAO.queryListContactFace());
 		model.addAttribute("contactList", contactInfo);
@@ -229,16 +265,51 @@ public class MainController {
 		placeLoadUnloadInfo.setList(placeLoadUnloadDAO.queryListPlaceLoadUnload());
 		model.addAttribute("placeLoadUnloadList", placeLoadUnloadInfo);
 		
+		RequestList requestList = Utils.getRequestListInSession(request);
 		
-		//пока не реализованно сохранение в таблицу ниже, сперва сохраню 
-		//в БД, проверю как работает добавление RequestDetailsForm, затем 
-		//буду думать о переносе в форму RequestList
-/*		RequestList requestList = Utils.getRequestListInSession(request);
-		model.addAttribute("requestList", requestList);*/
+		if (result.hasErrors()) {
+	        System.out.println("save hasErrors: " + result.getAllErrors().toString() );
+			return "request";
+		}
+		
+		try {
+			requestList.getList().add(requestDetailsForm);
+			model.addAttribute("requestList", requestList);
+			System.out.println("\n" + "add Request Post " + requestList.getList().toString() + "\n");
+		} catch (Exception e) {
+			Throwable rootCause = ExceptionUtils.getRootCause(e);
+	        String message = rootCause.getMessage();
+	        System.out.println("\n" + "Exception e: " + message);
+	        model.addAttribute("errorMessage", message);
+	        // Show product form.
+	        return "request";
+	    }
 		return "request";
 	}
 	
-	@RequestMapping(value = {"/addRequest"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/requestConfirmation"}, method = RequestMethod.POST)
+	public String requestSave(HttpServletRequest request, Model model,
+			final RedirectAttributes redirectAttributes) {
+		RequestList requestList = Utils.getRequestListInSession(request);
+		
+	    try {
+	    	  requestDAO.saveRequest(requestList);
+		      System.out.println("save" );
+	      } catch (Exception e) {
+	    	  Throwable rootCause = ExceptionUtils.getRootCause(e);
+		      String message = rootCause.getMessage();
+		      System.out.println("\nException e: " + message);
+	          return "request";
+	      }
+	      // Remove Request from Session.
+	      Utils.removeRequestInSession(request);
+
+	      // Store last Request.
+	      Utils.storeLastRequestInSession(request, requestList);
+	      return "redirect:/";
+	}	
+	//сохраняет RequestDetails
+/*	@RequestMapping(value = {"/addRequest"}, method = RequestMethod.POST)
 	public String requesDetailsSave(Model model, @ModelAttribute("requestDetailsForm")
 			@Validated RequestDetailsForm requestDetailsForm, BindingResult result,
 			final RedirectAttributes redirectAttributes) {
@@ -265,7 +336,7 @@ public class MainController {
 	         return "request";
 	    }
 		return "redirect:/";
-	}
+	}*/
 	
 	//пока не реализованно сохранение в таблицу ниже, сперва сохраню 
 	//в БД, проверю как работает добавление RequestDetailsForm, затем 
@@ -293,22 +364,7 @@ public class MainController {
 
 		return "request";
 	}
-	
-	@RequestMapping(value = {"/requestConfirmation"}, method = RequestMethod.POST)
-	public String requestSave(HttpServletRequest request, Model model) {
-		RequestList requestList = Utils.getRequestListInSession(request);
-		
-	      try {
-	    	  requestDetailsDAO.saveRequest(requestList);
-	       } catch (Exception e) {
-	          return "request";
-	       }
-	      // Remove Request from Session.
-	      Utils.removeRequestInSession(request);
-
-	      // Store last Request.
-	      Utils.storeLastOrderedCartInSession(request, requestList);
-	      return "/";
-	}	
 */	
+	
+	
 }

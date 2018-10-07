@@ -1,6 +1,5 @@
 package logistic.dao;
 
-
 import java.util.List;
 import java.util.UUID;
 
@@ -77,6 +76,10 @@ public class ContactFaceDAO {
 		session.flush();		
 	}
 
+	/**
+	 * Запрашивает список контактых лиц
+	 * @return список лиц, которые заводились с данного аккаунта
+	 */
 	public List<ContactFaceInfo> queryListContactFace() {
 		
 		String sql = "Select new " + ContactFaceInfo.class.getName()
@@ -87,7 +90,7 @@ public class ContactFaceDAO {
 		Session session = this.sessionFactory.getCurrentSession();
         Query<ContactFaceInfo> query = session.createQuery(sql, ContactFaceInfo.class);
         query.setParameter("userName", accountDAO.findUserAccount());
-        System.out.println("\n List<ContactFaceInfo> " + query.getResultList().toString());
+//      System.out.println("\n List<ContactFaceInfo> " + query.getResultList().toString());
 		return query.getResultList();
 	}
 
